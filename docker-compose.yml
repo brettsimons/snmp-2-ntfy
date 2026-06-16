@@ -1,14 +1,22 @@
 services:
-  idrac-2-ntfy:
+  snmp-2-ntfy:
     build: .
-    container_name: idrac-2-ntfy
+    container_name: snmp-2-ntfy
     restart: unless-stopped
     ports:
-      - "162:162/udp"
-    env_file:
-      - .env
-    cap_add:
-      - NET_BIND_SERVICE
+      - "162:1162/udp"
+    environment:
+      - NTFY_URL=https://ntfy.example.com
+      - NTFY_TOKEN=your_bearer_token
+      - SNMP_COMMUNITIES=your_community
+      # - NTFY_TOPIC=              # override topic (default: use SNMP community)
+      # - NTFY_PRIORITY=           # override priority (default: derived from severity)
+      # - NTFY_TAGS=               # extra comma-separated tags
+      # - SNMP_LISTEN_ADDRESS=0.0.0.0
+      # - SNMP_LISTEN_PORT=1162
+      # - IDRAC_LABEL=iDRAC
+      # - TRUENAS_LABEL=TrueNAS
+      # - LOG_LEVEL=INFO
     # healthcheck by verifying the UDP socket is open
     # (passive — no active probe since it's UDP)
     healthcheck:
