@@ -78,7 +78,7 @@ Set `NTFY_TOPIC` to override this and send all traps to a single topic regardles
 | `NTFY_TOPIC` | no | - | Override topic for all traps (default: use SNMP community) |
 | `SNMP_COMMUNITIES` | **yes** | - | Comma-separated list of accepted SNMP communities |
 | `SNMP_LISTEN_ADDRESS` | no | `0.0.0.0` | Listen on all interfaces |
-| `SNMP_LISTEN_PORT` | no | `1162` | Internal listen port (Docker maps host 162 → 1162) |
+| `SNMP_LISTEN_PORT` | no | `162` | SNMP port |
 | `IDRAC_LABEL` | no | `iDRAC` | Server name in iDRAC notifications |
 | `TRUENAS_LABEL` | no | `TrueNAS` | Server name in TrueNAS notifications |
 | `LOG_LEVEL` | no | `INFO` | DEBUG, INFO, WARNING, ERROR |

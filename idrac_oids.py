@@ -72,12 +72,13 @@ class IDRACHandler(TrapHandler):
             status_code = 0
         severity_name, _ = _SEVERITY_MAP.get(status_code, ("unknown", "❓"))
 
-        alert_msg = parsed.get("alertMessage", "No message provided")
-        fqdn = parsed.get("alertSystemFQDN", parsed.get("alertRacFQDN", source_addr))
-        svc_tag = parsed.get("alertSystemServiceTag", parsed.get("alertChassisServiceTag", "N/A"))
+        msg_id = parsed.get("alertMessageID") or "N/A"
+        alert_msg = parsed.get("alertMessage") or "No message provided"
+        fqdn = parsed.get("alertSystemFQDN") or parsed.get("alertRacFQDN") or source_addr
+        svc_tag = parsed.get("alertSystemServiceTag") or parsed.get("alertChassisServiceTag") or "N/A"
 
         return self.build_notification(
             alert_msg,
-            [f"Host: {fqdn}", f"Service Tag: {svc_tag}", f"Severity: {severity_name}"],
+            [f"Message ID: {msg_id}", f"Host: {fqdn}", f"Service Tag: {svc_tag}", f"Severity: {severity_name}"],
             severity_name,
         )

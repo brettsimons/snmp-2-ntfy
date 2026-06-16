@@ -25,7 +25,7 @@ from truenas_oids import TrueNASHandler
 # Configuration (all from environment)
 # ---------------------------------------------------------------------------
 SNMP_LISTEN_ADDRESS = os.getenv("SNMP_LISTEN_ADDRESS", "0.0.0.0")
-SNMP_LISTEN_PORT = int(os.getenv("SNMP_LISTEN_PORT", "1162"))
+SNMP_LISTEN_PORT = int(os.getenv("SNMP_LISTEN_PORT", "162"))
 SNMP_COMMUNITIES = [
     community.strip()
     for community in os.getenv("SNMP_COMMUNITIES", "").split(",")
@@ -108,8 +108,15 @@ def trap_callback(snmp_engine, state_reference, context_engine_id, context_name,
             break
 
     log.debug("Trap OID: %s", trap_oid)
+    log.debug("Var binds: %s", {oid.prettyPrint(): val.prettyPrint() for oid, val in var_binds})
 
+    # Prefer snmpTrapAddress varbind (c) over transport address
     src_addr = transport_address[0] if transport_address else "unknown"
+    for oid, val in var_binds:
+        if oid.prettyPrint() == "1.3.6.1.6.3.18.1.3.0":
+            src_addr = val.prettyPrint()
+            log.debug("Using snmpTrapAddress as source: %s", src_addr)
+            break
 
     # Match trap OID to a registered handler
     handler = None
