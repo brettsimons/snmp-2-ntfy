@@ -1,6 +1,6 @@
 services:
   snmp-2-ntfy:
-    build: .
+    image: ghcr.io/brettsimons/snmp-2-ntfy:latest
     container_name: snmp-2-ntfy
     restart: unless-stopped
     network_mode: host

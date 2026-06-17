@@ -16,32 +16,23 @@ iDRAC / TrueNAS → SNMP trap (UDP 162) → Container → ntfy → Your Phone
 
 ## Quick Start
 
-**1. Configure `docker-compose.yml`:**
+**1. Download `docker-compose.yml`:**
+
+```bash
+curl -O https://raw.githubusercontent.com/brettsimons/snmp-2-ntfy/main/docker-compose.yml
+```
+
+**2. Configure:**
 
 Edit the environment variables in `docker-compose.yml` — at minimum set `NTFY_URL`, `NTFY_TOKEN`, and `SNMP_COMMUNITIES`.
 
-**2. Run with Docker:**
+**3. Run:**
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
-**3. Configure iDRAC:**
-
-In your iDRAC web interface:
-- Go to **iDRAC Settings → Network → SNMP**
-- Enable SNMP traps
-- Add trap destination: `<your-server-ip>:162`
-- Set community string: `public` (or your chosen community — this becomes the ntfy topic)
-- Send a test trap to verify
-
-**4. Configure TrueNAS (optional):**
-
-In the TrueNAS web interface:
-- Go to **System → SNMP**
-- Enable SNMP traps
-- Set community string
-- Add trap destination: `<your-server-ip>:162`
+The pre-built image `ghcr.io/brettsimons/snmp-2-ntfy:latest` is pulled automatically.
 
 ## Alert Severity
 
@@ -75,38 +66,13 @@ Set `NTFY_TOPIC` to override this and send all traps to a single topic regardles
 |----------|----------|---------|-------------|
 | `NTFY_URL` | **yes** | - | ntfy base URL (e.g., `https://ntfy.sh`) |
 | `NTFY_TOKEN` | **yes** | - | Bearer token for authentication |
-| `NTFY_TOPIC` | no | - | Override topic for all traps (default: use SNMP community) |
 | `SNMP_COMMUNITIES` | **yes** | - | Comma-separated list of accepted SNMP communities |
+| `NTFY_TOPIC` | no | - | Override topic for all traps (default: use SNMP community) |
 | `SNMP_LISTEN_ADDRESS` | no | `0.0.0.0` | Listen on all interfaces |
 | `SNMP_LISTEN_PORT` | no | `162` | SNMP port |
 | `IDRAC_LABEL` | no | `iDRAC` | Server name in iDRAC notifications |
 | `TRUENAS_LABEL` | no | `TrueNAS` | Server name in TrueNAS notifications |
 | `LOG_LEVEL` | no | `INFO` | DEBUG, INFO, WARNING, ERROR |
-
-## Supported Alerts
-
-### iDRAC
-
-- Temperature warnings/critical
-- Fan failures
-- Power supply issues
-- Memory errors
-- Storage/disk failures
-- CPU/processor problems
-- Battery warnings
-- Network issues
-- RAID controller alerts
-- System events
-
-### TrueNAS
-
-- ZFS pool health alerts
-- Disk failures and S.M.A.R.T. warnings
-- Replication and scrub alerts
-- Software updates available
-- Certificate expiration
-- UPS events
-- General system alerts and cancellations
 
 ## Testing
 
@@ -136,6 +102,16 @@ Check logs:
 ```bash
 docker logs snmp-2-ntfy
 ```
+
+## Building Locally
+
+To build the image yourself instead of using the pre-built one:
+
+```bash
+docker build -t snmp-2-ntfy .
+```
+
+Then replace the `image:` line in `docker-compose.yml` with `build: .`.
 
 ## Running Without Docker
 
