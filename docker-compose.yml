@@ -4,6 +4,8 @@ services:
     container_name: snmp-2-ntfy
     restart: unless-stopped
     network_mode: host
+    cap_add:
+      - NET_BIND_SERVICE
     environment:
       - NTFY_URL=https://ntfy.example.com
       - NTFY_TOKEN=your_bearer_token
